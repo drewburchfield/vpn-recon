@@ -1,0 +1,13 @@
+{
+  "name": "vpn-recon",
+  "version": "1.0.0",
+  "description": "Security-hardened VPN reconnaissance with 5-layer defense. Requires Docker setup first (see README).",
+  "author": {
+    "name": "Drew Burchfield",
+    "url": "https://github.com/drewburchfield"
+  },
+  "homepage": "https://github.com/drewburchfield/vpn-recon",
+  "repository": "https://github.com/drewburchfield/vpn-recon",
+  "license": "MIT",
+  "keywords": ["vpn", "security", "reconnaissance", "mcp", "gluetun", "privacy"]
+}

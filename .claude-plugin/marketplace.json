@@ -1,0 +1,26 @@
+{
+  "name": "vpn-recon",
+  "owner": {
+    "name": "Drew Burchfield",
+    "url": "https://github.com/drewburchfield"
+  },
+  "metadata": {
+    "description": "Security-hardened VPN reconnaissance plugins",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "vpn-recon",
+      "source": "./",
+      "description": "Route reconnaissance through VPN with 5-layer security defense. Supports 30+ VPN providers via Gluetun.",
+      "author": {
+        "name": "Drew Burchfield",
+        "url": "https://github.com/drewburchfield"
+      },
+      "category": "security",
+      "homepage": "https://github.com/drewburchfield/vpn-recon",
+      "version": "3.0.0",
+      "strict": true
+    }
+  ]
+}

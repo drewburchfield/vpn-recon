@@ -1,0 +1,34 @@
+# Environment and credentials
+.env
+*.env
+!.env.example
+
+# Docker data
+mcp-server/data/
+**/gluetun-data/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+*.so
+.venv/
+venv/
+ENV/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+logs/

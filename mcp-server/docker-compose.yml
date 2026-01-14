@@ -1,0 +1,66 @@
+services:
+  vpn-recon:
+    image: qmcgaw/gluetun:v3.41.0
+    container_name: vpn-recon
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    ports:
+      - "127.0.0.1:${PROXY_PORT:-9888}:8888/tcp"   # HTTP proxy (localhost only)
+      - "127.0.0.1:${MCP_PORT:-3100}:${MCP_PORT:-3100}/tcp"  # MCP server (localhost only)
+    environment:
+      # VPN Configuration (supports any Gluetun provider)
+      # See .env.example for provider-specific setup
+      - VPN_SERVICE_PROVIDER=${VPN_PROVIDER:-nordvpn}
+      - VPN_TYPE=${VPN_TYPE:-openvpn}
+      # OpenVPN credentials (most providers)
+      - OPENVPN_USER=${VPN_USER:-}
+      - OPENVPN_PASSWORD=${VPN_PASS:-}
+      # WireGuard credentials (if using WireGuard)
+      - WIREGUARD_PRIVATE_KEY=${VPN_WIREGUARD_KEY:-}
+      - WIREGUARD_ADDRESSES=${VPN_WIREGUARD_ADDRESSES:-}
+      # Server location
+      - SERVER_COUNTRIES=${VPN_COUNTRY:-United States}
+
+      # Proxy
+      - HTTPPROXY=on
+      - SHADOWSOCKS=off
+
+      # Updates
+      - UPDATER_PERIOD=24h
+
+      # Timezone
+      - TZ=${TZ:-America/New_York}
+
+    volumes:
+      - ./data:/gluetun
+
+    restart: unless-stopped
+
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "https://ipinfo.io/ip"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  mcp-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: vpn-recon-mcp
+    # Share VPN network - all traffic routes through VPN tunnel
+    network_mode: "service:vpn-recon"
+    volumes:
+      - ./server.py:/app/server.py  # Mount for development (hot reload)
+    restart: unless-stopped
+    depends_on:
+      vpn-recon:
+        condition: service_healthy
+    environment:
+      # MCP server now shares vpn-recon's network, so proxy is on localhost:8888
+      - VPN_PROXY_URL=http://localhost:8888
+      - PORT=${MCP_PORT:-3100}
+      - UVICORN_HOST=0.0.0.0
+      - UVICORN_PORT=${MCP_PORT:-3100}
